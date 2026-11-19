@@ -1,0 +1,44 @@
+// Vice Cover Studio — the handover program for gta6-cover-art-01 (Node 22,
+// standard library only). The app itself is plain static files under app/:
+// index.html plus its ES modules, the Anton font and the sample photos, loaded
+// offline with no network request. This program copies app/ and screenshots/
+// from beside this file into /output and writes /output/dossier.json, the
+// summary the judge reads, using the vendored make.fun library.
+//
+// Try it locally with `node serve.ts`, then open http://localhost:8080.
+// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
+//   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+//
+// Note: /output is a mount point in the grader, so this program only ever
+// creates directories inside it and copies or writes files there — it never
+// removes the output directory itself.
+
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { buildDossier } from './vendor/makefun-app.ts';
+
+const repoRoot = fileURLToPath(new URL('.', import.meta.url));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+mkdirSync(outDir, { recursive: true });
+cpSync(join(repoRoot, 'app'), join(outDir, 'app'), { recursive: true });
+mkdirSync(join(outDir, 'screenshots'), { recursive: true });
+const shotsDir = join(repoRoot, 'screenshots');
+if (existsSync(shotsDir)) cpSync(shotsDir, join(outDir, 'screenshots'), { recursive: true });
+
+// The scorer's own caps (reference/gate.json): only text_max_bytes shapes the
+// bytes; the other caps refuse an entry the scorer would refuse anyway (more
+// than 4 screenshots or one over 256 KiB; more than 993 files in app/ or
+// 48 MiB of app files in all; a path under app/ over 1000 bytes). app/ counts
+// beside /output's own 1000-entry cap, alongside screenshots/ and dossier.json.
+writeFileSync(
+  join(outDir, 'dossier.json'),
+  buildDossier(outDir, {
+    text_max_bytes: 163840,
+    screenshots: { max: 4, max_bytes: 262144 },
+    app_max_files: 993,
+    app_max_bytes: 50331648,
+    app_path_max_bytes: 1000,
+  }),
+);

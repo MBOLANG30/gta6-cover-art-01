@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice Cover Studio — GTA-style cover art maker</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">VC</span>
+    <div>
+      <h1>Vice Cover Studio</h1>
+      <p>Turn your photo into GTA-style cover art — panels, sunset grade, bold caption.</p>
+    </div>
+  </div>
+  <ol class="steps" aria-label="Four steps to a cover">
+    <li><b>1</b> Photo</li>
+    <li><b>2</b> Layout</li>
+    <li><b>3</b> Caption</li>
+    <li><b>4</b> Export PNG</li>
+  </ol>
+</header>
+<main class="studio">
+  <section class="preview-wrap" aria-label="Live preview">
+    <canvas id="preview" width="1080" height="1080" aria-label="The cover preview"></canvas>
+    <p class="hint">Click a panel to select it, then drag the photo inside it. The cyan outline is the selected panel.</p>
+    <div class="preview-actions">
+      <button id="exportBtn" type="button" class="primary">Export PNG 1080 x 1080</button>
+      <span id="status" role="status"></span>
+    </div>
+  </section>
+  <aside class="controls" aria-label="Cover controls">
+    <section class="group">
+      <h2>1 · Photo</h2>
+      <label class="file-label">Choose a photo from your machine
+        <input id="photoInput" type="file" accept="image/*">
+      </label>
+      <label class="check"><input id="fillAll" type="checkbox" checked> Same photo in every panel</label>
+      <div class="row">
+        <button id="sampleBoulevard" type="button">Try sample: Boulevard</button>
+        <button id="samplePier" type="button">Try sample: Pier</button>
+      </div>
+      <div class="row">
+        <button id="fillAllBtn" type="button">Fill all panels with this photo</button>
+        <button id="clearPanel" type="button">Clear selected panel</button>
+      </div>
+    </section>
+    <section class="group">
+      <h2>2 · Size &amp; layout</h2>
+      <div id="sizeRow" class="toggles" role="group" aria-label="Post size"></div>
+      <div id="layoutRow" class="toggles" role="group" aria-label="Panel layout"></div>
+      <div id="gradeRow" class="toggles" role="group" aria-label="Colour grade"></div>
+      <label>Zoom selected panel
+        <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1">
+      </label>
+      <button id="zoomFit" type="button">Reset zoom &amp; position</button>
+    </section>
+    <section class="group">
+      <h2>3 · Caption</h2>
+      <label>Caption
+        <input id="captionInput" type="text" maxlength="30" value="SUNSET HEIST" autocomplete="off">
+      </label>
+      <label>Tag line above it
+        <input id="subInput" type="text" maxlength="40" value="SUNSET BOULEVARD" autocomplete="off">
+      </label>
+      <label>Caption size
+        <input id="captionSize" type="range" min="0.7" max="1.4" step="0.05" value="1">
+      </label>
+      <div class="row split">
+        <label>Colour <span id="colorRow" class="swatches"></span></label>
+        <label>Position
+          <select id="captionPos">
+            <option value="bottom" selected>Bottom</option>
+            <option value="top">Top</option>
+          </select>
+        </label>
+      </div>
+    </section>
+    <p class="note">Everything runs on your machine: photos are never uploaded, and the app works with no network. Fonts: Anton (SIL Open Font License), shipped under app/fonts.</p>
+  </aside>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
